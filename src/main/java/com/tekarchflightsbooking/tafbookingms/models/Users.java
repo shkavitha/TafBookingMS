@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -14,8 +15,8 @@ public class Users {
 private Long id;
    private String username;
    private String email;
-   private String phoneNumber;
-   private LocalDate createdAt;
-   private LocalDate updatedAt;
+   private String phone;
+   private LocalDateTime createdAt;
+   private LocalDateTime updatedAt;
 
 }

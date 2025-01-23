@@ -16,7 +16,7 @@ public class BookingsDTO {
     private Long users_id;
     private Long flights_id;
     private String status; // e.g., Booked, Cancelled
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
 

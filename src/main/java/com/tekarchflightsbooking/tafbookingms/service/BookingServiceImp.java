@@ -36,7 +36,7 @@ public class BookingServiceImp implements BookingService {
 
     public void updateAvailability(Long flightId, Flights flight) {
         flight.setAvailableSeats(flight.getAvailableSeats() - 1);
-        restTemplate.put(flight_Url + flightId, flight);
+        restTemplate.put(flight_Url+"/" + flightId, flight);
     }
 
 
@@ -48,17 +48,17 @@ public class BookingServiceImp implements BookingService {
             Long flightId = receivedBooking.getFlights_id();
 
             Users user = restTemplate.getForObject(user_Url+"/" + userId, Users.class);
-            Flights flight = restTemplate.getForObject(flight_Url + flightId, Flights.class);
+            Flights flight = restTemplate.getForObject(flight_Url+"/" + flightId, Flights.class);
 
             System.out.println(flight.getDeparture());
 
             if (user != null && flight != null) {
                 if (flight.getAvailableSeats() > 0) {
                     Bookings booking = new Bookings();
-                    booking.setUsers(user);
-                    booking.setFlights(flight);
+                    booking.setUser(user);
+                    booking.setFlight(flight);
                     booking.setStatus("Booked");
-                    BookingsDTO bookedDetails = restTemplate.postForObject(dataStore_Booking_Url, booking, BookingsDTO.class);
+                    Bookings bookedDetails = restTemplate.postForObject(dataStore_Booking_Url, booking, Bookings.class);
                     updateAvailability(flightId, flight);
                     return ResponseEntity.status(HttpStatus.CREATED).body("Booked Successfully");
 
@@ -84,12 +84,12 @@ public class BookingServiceImp implements BookingService {
     @Override
     public ResponseEntity<Object> getBookedDetailsById(Long bookingId) {
         try {
-            Bookings booking = restTemplate.getForObject(dataStore_Booking_Url + bookingId, Bookings.class);
+            Bookings booking = restTemplate.getForObject(dataStore_Booking_Url+"/" + bookingId, Bookings.class);
             if (booking != null) {
                 BookingsDTO receivedBookeddetails = new BookingsDTO();
                 receivedBookeddetails.setId(booking.getId());
-                receivedBookeddetails.setUsers_id(booking.getUsers().getId());
-                receivedBookeddetails.setFlights_id(booking.getFlights().getId());
+                receivedBookeddetails.setUsers_id(booking.getUser().getId());
+                receivedBookeddetails.setFlights_id(booking.getFlight().getId());
                 receivedBookeddetails.setStatus(booking.getStatus());
                 receivedBookeddetails.setCreatedAt(booking.getCreatedAt());
                 receivedBookeddetails.setUpdatedAt(booking.getUpdatedAt());
@@ -108,7 +108,7 @@ public class BookingServiceImp implements BookingService {
 
     @Override
     public List<Bookings> getBookedDetailsByUserId(Long userId) {
-        String url = dataStore_Booking_Url + "users/" + userId;
+        String url = dataStore_Booking_Url + "/users/" + userId;
 
 //try{
         ResponseEntity<List<Bookings>> response = restTemplate.exchange(
@@ -129,9 +129,9 @@ public class BookingServiceImp implements BookingService {
     @Override
     public void cancelBookingsById(Long bookingId) {
         try {
-            Bookings cancelledBooking = restTemplate.getForObject(dataStore_Booking_Url + bookingId, Bookings.class);
+            Bookings cancelledBooking = restTemplate.getForObject(dataStore_Booking_Url+"/" + bookingId, Bookings.class);
             cancelledBooking.setStatus("Cancelled");
-            restTemplate.put(dataStore_Booking_Url + bookingId, cancelledBooking);
+            restTemplate.put(dataStore_Booking_Url+"/" + bookingId, cancelledBooking);
         } catch (HttpClientErrorException e) {
             System.out.println("Error: " + e.getStatusCode());
         }
