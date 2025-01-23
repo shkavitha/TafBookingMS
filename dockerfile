@@ -5,7 +5,7 @@ FROM 522814707388.dkr.ecr.us-east-2.amazonaws.com/java-image:17-jdk-slim
 WORKDIR /app
 
 # Copy the Spring Boot JAR file into the container
-COPY build/libs/TafbookingMS.jar app.jar
+COPY build/libs/tafbookingms-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the port your application runs on (optional but recommended)
 EXPOSE 8083
