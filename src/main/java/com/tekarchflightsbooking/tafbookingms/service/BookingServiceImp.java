@@ -35,7 +35,7 @@ public class BookingServiceImp implements BookingService {
 
 
     public void updateAvailability(Long flightId, Flights flight) {
-        flight.setAvailable_seats(flight.getAvailable_seats() - 1);
+        flight.setAvailableSeats(flight.getAvailableSeats() - 1);
         restTemplate.put(flight_Url + flightId, flight);
     }
 
@@ -47,16 +47,18 @@ public class BookingServiceImp implements BookingService {
             Long userId = receivedBooking.getUsers_id();
             Long flightId = receivedBooking.getFlights_id();
 
-            Users user = restTemplate.getForObject(user_Url + userId, Users.class);
+            Users user = restTemplate.getForObject(user_Url+"/" + userId, Users.class);
             Flights flight = restTemplate.getForObject(flight_Url + flightId, Flights.class);
 
+            System.out.println(flight.getDeparture());
+
             if (user != null && flight != null) {
-                if (flight.getAvailable_seats() > 0) {
+                if (flight.getAvailableSeats() > 0) {
                     Bookings booking = new Bookings();
                     booking.setUsers(user);
                     booking.setFlights(flight);
                     booking.setStatus("Booked");
-                    BookingsDTO bookedDetails = restTemplate.postForObject(dataStore_Booking_Url + "book", booking, BookingsDTO.class);
+                    BookingsDTO bookedDetails = restTemplate.postForObject(dataStore_Booking_Url, booking, BookingsDTO.class);
                     updateAvailability(flightId, flight);
                     return ResponseEntity.status(HttpStatus.CREATED).body("Booked Successfully");
 
